@@ -1,4 +1,6 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import {AddBox, Delete} from "@material-ui/icons";
+import {IconButton, TextField} from "@material-ui/core";
 
 type AddItemPropsType = {
     addItem: (title: string) => void
@@ -10,7 +12,7 @@ export function AddItemForm(props: AddItemPropsType) {
     let [title, setTitle] = useState<string>("")
     let [error, setError] = useState<string | null>(null)
 
-    const addTask = () => {
+    const addItem = () => { //give only TITLE to parent's callback
         if (title.trim() !== "") {
             props.addItem(title)
             setTitle("")
@@ -18,24 +20,39 @@ export function AddItemForm(props: AddItemPropsType) {
             setError("Title is required!")
         }
     }
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
-    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+    const onChangeTitleHandler = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
+    const onKeyPressAddItemHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         setError(null)
         if (e.charCode === 13) {
-            addTask()
+            addItem()
         }
     }
 
     return (
         <div>
             <div>
-                <input value={title}
-                       onChange={onChangeHandler}
-                       onKeyPress={onKeyPressHandler}
-                       className={error ? "error" : ""}
+                <TextField
+                    variant={"outlined"}
+                    value={title}
+                    onChange={onChangeTitleHandler}
+                    onKeyPress={onKeyPressAddItemHandler}
+                    label={"Title"}
+                    error={!!error}
+                    helperText={error}
                 />
-                <button onClick={addTask}>+</button>
-                {error && <div className="error-message"> {error} </div>}
+                {/*<input value={title}
+                       onChange={onChangeTitleHandler}
+                       onKeyPress={onKeyPressAddItemHandler}
+                       className={error ? "error" : ""}
+                />*/}
+                {/*<button onClick={addItem}>+</button>*/}
+                <IconButton
+                    onClick={ addItem }
+                    color={"primary"}
+                >
+                    <AddBox />
+                </IconButton>
+                {/*{error && <div className="error-message"> {error} </div>}*/}
             </div>
         </div>
     )

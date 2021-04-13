@@ -1,3 +1,4 @@
+/*
 .App {
   padding: 30px;
   display: flex;
@@ -13,4 +14,9 @@
 
 .error-message {
   color: red;
+}
+*/
+
+.done {
+  opacity: 0.6;
 }
