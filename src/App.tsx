@@ -17,7 +17,7 @@ export type TodolistType = {
     title: string,
     filter: FilterType
 }
-type TaskStateType = {
+export type TaskStateType = {
     [key: string]: TaskType[]
 }
 
@@ -48,13 +48,7 @@ function App() {
     })
 
 
-    let changeFilter = (value: FilterType, todolistId: string) => {
-        let todolist = todolists.find(tl => tl.id === todolistId)
-        if (todolist) {
-            todolist.filter = value
-            setTodolists([...todolists])
-        }
-    }
+
     let removeTask = (taskId: string, todolistId: string) => {
         let todolistTasks = tasks[todolistId]
         tasks[todolistId] = todolistTasks.filter(t => t.id != taskId)
@@ -79,8 +73,15 @@ function App() {
         let task = todolistTasks.find(t => t.id === taskId)
         if (task) {
             task.title = newTitle
-            debugger
             setTasks({...tasks})
+        }
+    }
+
+    let changeTodolistFilter = (newFilterValue: FilterType, todolistId: string) => {
+        let todolist = todolists.find(tl => tl.id === todolistId)
+        if (todolist) {
+            todolist.filter = newFilterValue
+            setTodolists([...todolists])
         }
     }
     let changeTodolistTitle = (todolistId: string ,newTitle: string) => {
@@ -96,18 +97,20 @@ function App() {
         setTasks({...tasks})
     }
     let addTodolist = (todolistTitle: string) => {
-        let todolist: TodolistType = {
+        let newTodolist: TodolistType = {
             id: v1(),
             title: todolistTitle,
             filter: "all"
         }
-        setTodolists([todolist, ...todolists])
+        setTodolists([newTodolist, ...todolists])
         setTasks({
             ...tasks,
-            [todolist.id]: []
+            [newTodolist.id]: []
         })
     }
 
+
+    /*UI:*/
     let todolistComponents = todolists.map(tl => {
         let allTodolistTasks = tasks[tl.id]
         let tasksForTodolist = allTodolistTasks
@@ -130,7 +133,7 @@ function App() {
                         removeTask={removeTask}
                         addTask={addTask}
                         changeTaskStatus={changeTaskStatus}
-                        changeFilter={changeFilter}
+                        changeFilter={changeTodolistFilter}
                         removeTodolist={removeTodolist}
                         changeTaskTitle={changeTaskTitle}
                         changeTodolistTitle={changeTodolistTitle}
