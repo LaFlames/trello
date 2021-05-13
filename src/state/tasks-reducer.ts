@@ -45,7 +45,7 @@ export const tasksReducer = (state = InitialState, action: ActionType): TaskStat
             return copyState
         }
         case "ADD-TASK": {
-            let newTask = { id: action.todolistId, title: action.taskTitle, isDone: false }
+            let newTask = { id: v1(), title: action.taskTitle, isDone: false }
             /*let copyStatee = {...state}
             let todolistTasks = copyStatee[action.todolistId]
             copyStatee[action.todolistId] = [newTask, ...todolistTasks]
