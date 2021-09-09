@@ -1,9 +1,8 @@
 import React, {ChangeEvent} from "react";
-
-import {TaskType} from "../AppWithRedux";
 import {Checkbox, IconButton} from "@material-ui/core";
 import {EditableSpan} from "./EditableSpan";
 import {Delete} from "@material-ui/icons";
+import { TaskType } from "../api/todolists-api";
 
 
 export type TaskPropsType = {
@@ -24,9 +23,9 @@ export const Task = React.memo(({task, removeTask, changeTaskTitle, changeTaskSt
     }
     const changeTaskTitleHandler = (newTitle: string) => changeTaskTitle(task.id, newTitle)
 
-    return <li key={task.id} className={task.isDone ? "done" : ""}>
+    return <li key={task.id} className={task.completed ? "done" : ""}>
         <Checkbox
-            checked={task.isDone}
+            checked={task.completed}
             onChange={changeTaskStatusHandler}
             color={"primary"}
         />
