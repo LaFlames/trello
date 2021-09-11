@@ -26,7 +26,6 @@ export enum TaskPriorities {
 export type TaskType = {
     description: string
     title: string
-    completed: boolean
     status: TaskStatuses
     priority: TaskPriorities
     startDate: string
@@ -48,7 +47,7 @@ type ResponseType<D> = {
     data: D
 }
 
-type UpdateTaskPutRequestType = {
+export type UpdateTaskPropertiesType = {
     title: string
     description: string
     status: number
@@ -79,7 +78,7 @@ export const todolistsApi = {
     deleteTodolist (todolistId: string) {
         return instance.delete<ResponseType<{}>>(`todo-lists/${todolistId}`)
     },
-    updateTodolistTitle (todolistId: string, title: string) {
+    changeTodolistTitle (todolistId: string, title: string) {
         return instance.put<ResponseType<{}>>(`todo-lists/${todolistId}`, {title})
     },
 
@@ -89,12 +88,12 @@ export const todolistsApi = {
         return instance.get<GetTasksResponseType>(`todo-lists/${todolistId}/tasks`)
     },
     createTask (todolistId: string, title: string) {
-        return instance.post<ResponseType<TaskType>>(`todo-lists/${todolistId}/tasks`, {title})
+        return instance.post<ResponseType<{item: TaskType}>>(`todo-lists/${todolistId}/tasks`, {title})
     },
     deleteTask (todolistId: string, taskId: string) {
         return instance.delete<ResponseType<{}>>(`todo-lists/${todolistId}/tasks/${taskId}`)
     },
-    updateTask (todolistId: string, taskId: string, properties: UpdateTaskPutRequestType) {
+    updateTask (todolistId: string, taskId: string, properties: UpdateTaskPropertiesType) {
         return instance.put<ResponseType<{item: TaskType}>>(`todo-lists/${todolistId}/tasks/${taskId}`, properties)
     }
 }

@@ -74,7 +74,7 @@ export const UpdateTodolistTitle = () => {
 
    const updateTodolistOnClick = () => {
         if (todoId && title) {
-            todolistsApi.updateTodolistTitle(todoId, title)
+            todolistsApi.changeTodolistTitle(todoId, title)
                 .then( (res) => {
                     setState(res.data);
                 })
