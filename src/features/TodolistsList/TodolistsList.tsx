@@ -1,33 +1,22 @@
-import React, {useCallback, useEffect} from 'react';
-import './App.css';
-import Todolist from "./Components/Todolist";
-import {AddItemForm} from "./Components/AddItemForm";
-import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
-import {Menu} from "@material-ui/icons";
+import React, {useCallback, useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "../../app/store";
 import {
     addTodolistTC,
     changeTodolistFilterAC,
-    changeTodolistTitleTC,
-    deleteTodolistTC,
+    changeTodolistTitleTC, deleteTodolistTC,
     fetchTodolistsTC,
     TodolistEntityType
-} from "./state/todolist-reducer";
-import {addTaskTC, removeTasksTC, updateTaskTC} from "./state/tasks-reducer";
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "./state/store";
-import {TaskStatuses, TaskType} from "./api/todolists-api";
+} from "./Todolist/todolist-reducer";
+import {addTaskTC, removeTasksTC, updateTaskTC} from "./Todolist/Task/tasks-reducer";
+import {TaskStatuses} from "../../api/todolists-api";
+import {Grid, Paper} from "@material-ui/core";
+import Todolist from "./Todolist/Todolist";
+import {AddItemForm} from "../../сomponents/AddItemForm/AddItemForm";
+import {FilterType, TaskStateType} from "../../app/App";
 
 
-export type FilterType = "all" | "active" | "completed"
-
-
-export type TaskStateType = {
-    [key: string]: TaskType[]
-}
-
-
-
-function AppWithRedux() {
+export const TodolistsList: React.FC<any> = (props) => {
 
     let todolists = useSelector<AppRootStateType, TodolistEntityType[]>(state => state.todolists)
     let tasks = useSelector<AppRootStateType, TaskStateType>(state => state.tasks)
@@ -79,9 +68,7 @@ function AppWithRedux() {
             <Grid item key={tl.id}>
                 <Paper elevation={6} style={{padding: "20px"}}>
                     <Todolist
-                        todolistId={tl.id}
-                        title={tl.title}
-                        filter={tl.filter}
+                        todolist={tl}
                         tasks={tasks[tl.id]}
                         removeTask={removeTask}
                         addTask={addTask}
@@ -96,30 +83,12 @@ function AppWithRedux() {
         )
     })
 
-    return (
-        <div className="App">
-            <AppBar position="static">
-                <Toolbar style={{justifyContent: "space-between"}}>
-                    <IconButton edge="start" color="inherit" aria-label="menu">
-                        <Menu />
-                    </IconButton>
-                    <Typography variant="h6">
-                        Todolist
-                    </Typography>
-                    <Button color="inherit" variant={"outlined"}>Login</Button>
-                </Toolbar>
-            </AppBar>
-
-            <Container fixed style={{paddingTop: "20px"}}>
-                <Grid container={true}>
-                    <AddItemForm addItem={ addTodolist }  />
-                </Grid>
-                <Grid container={true} style={{paddingTop: "20px"}} spacing={2}>
-                    { todolistComponents }
-                </Grid>
-            </Container>
-        </div>
-    );
+    return <>
+        <Grid container={true}>
+            <AddItemForm addItem={ addTodolist }  />
+        </Grid>
+        <Grid container={true} style={{paddingTop: "20px"}} spacing={2}>
+            { todolistComponents }
+        </Grid>
+    </>
 }
-
-export default AppWithRedux;

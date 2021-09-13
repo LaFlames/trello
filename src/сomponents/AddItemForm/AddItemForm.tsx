@@ -4,17 +4,18 @@ import {IconButton, TextField} from "@material-ui/core";
 
 export type AddItemPropsType = {
     addItem: (title: string) => void
+    disabled?: boolean
 
 }
 
-export const AddItemForm = React.memo((props: AddItemPropsType) => {
+export const AddItemForm = React.memo(({addItem, disabled}: AddItemPropsType) => {
 
     let [title, setTitle] = useState<string>("")
     let [error, setError] = useState<string | null>(null)
 
-    const addItem = () => { //give only TITLE to parent's callback
+    const addItemHandler = () => { //give only TITLE to parent's callback
         if (title.trim() !== "") {
-            props.addItem(title)
+            addItem(title)
             setTitle("")
         } else {
             setError("Title is required!")
@@ -24,7 +25,7 @@ export const AddItemForm = React.memo((props: AddItemPropsType) => {
     const onKeyPressAddItemHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         error && setError(null)
         if (e.charCode === 13) {
-            addItem()
+            addItemHandler()
         }
     }
 
@@ -45,10 +46,11 @@ export const AddItemForm = React.memo((props: AddItemPropsType) => {
                        onKeyPress={onKeyPressAddItemHandler}
                        className={error ? "error" : ""}
                 />*/}
-                {/*<button onClick={addItem}>+</button>*/}
+                {/*<button onClick={addItemHandler}>+</button>*/}
                 <IconButton
-                    onClick={ addItem }
+                    onClick={ addItemHandler }
                     color={"primary"}
+                    disabled={disabled}
                 >
                     <AddBox />
                 </IconButton>

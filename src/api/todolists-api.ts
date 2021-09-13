@@ -1,60 +1,5 @@
 import axios from 'axios'
 
-export type TodolistType= {
-    id: string
-    addedDate: string
-    order: number
-    title: string
-}
-
-export enum TaskStatuses {
-    New,
-    InProgress,
-    Completed,
-    Draft
-}
-
-export enum TaskPriorities {
-    Low,
-    Middle,
-    Mi,
-    Urgently,
-    Later
-}
-
-
-export type TaskType = {
-    description: string
-    title: string
-    status: TaskStatuses
-    priority: TaskPriorities
-    startDate: string
-    deadline: string
-    id: string
-    todoListId: string
-    order: number
-    addedDate: string
-}
-type GetTasksResponseType = {
-    items: TaskType[]
-    totalCount: number
-    error: string
-}
-
-type ResponseType<D> = {
-    resultCode: number
-    messages: Array<string>
-    data: D
-}
-
-export type UpdateTaskPropertiesType = {
-    title: string
-    description: string
-    status: number
-    priority: number
-    startDate: string
-    deadline: string
-}
 
 
 let settings = {
@@ -96,4 +41,56 @@ export const todolistsApi = {
     updateTask (todolistId: string, taskId: string, properties: UpdateTaskPropertiesType) {
         return instance.put<ResponseType<{item: TaskType}>>(`todo-lists/${todolistId}/tasks/${taskId}`, properties)
     }
+}
+
+
+//types
+export type TodolistType= {
+    id: string
+    addedDate: string
+    order: number
+    title: string
+}
+export enum TaskStatuses {
+    New,
+    InProgress,
+    Completed,
+    Draft
+}
+export enum TaskPriorities {
+    Low,
+    Middle,
+    Mi,
+    Urgently,
+    Later
+}
+export type TaskType = {
+    description: string
+    title: string
+    status: TaskStatuses
+    priority: TaskPriorities
+    startDate: string
+    deadline: string
+    id: string
+    todoListId: string
+    order: number
+    addedDate: string
+}
+type GetTasksResponseType = {
+    items: TaskType[]
+    totalCount: number
+    error: string
+}
+export type ResponseType<D> = {
+    resultCode: number
+    messages: Array<string>
+    data: D
+}
+export type UpdateTaskPropertiesType = {
+    title: string
+    description: string
+    status: number
+    priority: number
+    startDate: string
+    deadline: string
 }
