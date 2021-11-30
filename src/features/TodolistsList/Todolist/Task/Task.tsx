@@ -33,7 +33,7 @@ export const Task = React.memo(({task, removeTask, changeTaskTitle, changeTaskSt
             title={task.title}
             onChange={changeTaskTitleHandler}
         />
-        <IconButton onClick={removeTaskHandler}>
+        <IconButton onClick={removeTaskHandler} disabled={task.status === TaskStatuses.InProgress}>
             <Delete/>
         </IconButton>
     </li>

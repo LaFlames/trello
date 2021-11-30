@@ -13,6 +13,14 @@ const instance = axios.create({
     ...settings
  })
 
+
+export const loginApi = {
+    loginUser(data: LoginDataType) {
+        return instance.post<ResponseType<{userId?: number}>>(`auth/login`, {...data})
+    }
+}
+
+
 export const todolistsApi = {
     getTodolists () {
         return instance.get<TodolistType[]>(`todo-lists`)
@@ -93,4 +101,11 @@ export type UpdateTaskPropertiesType = {
     priority: number
     startDate: string
     deadline: string
+}
+
+export type LoginDataType = {
+    email: string,
+    password: string,
+    rememberMe: boolean
+    captcha?: string
 }

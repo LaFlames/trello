@@ -1,9 +1,9 @@
 import {TaskStateType} from "../../../../app/App";
-import {TaskType, todolistsApi, UpdateTaskPropertiesType} from "../../../../api/todolists-api";
+import {TaskStatuses, TaskType, todolistsApi, UpdateTaskPropertiesType} from "../../../../api/todolists-api";
 import {Dispatch} from "redux";
 import {AppRootStateType} from "../../../../app/store";
 import {AddTodolistACType, RemoveTodolistACType, SetTodolistsACType} from "../todolist-reducer";
-import {setAppErrorAC, setAppStatusAC} from "../../../../app/app-reducer";
+import {setAppStatusAC} from "../../../../app/app-reducer";
 import {handleServerAppError, handleServerNetworkAppError} from "../../../../utilites/error-utils";
 
 
@@ -15,6 +15,7 @@ type ActionType =
     | RemoveTodolistACType
     | SetTodolistsACType
     | ReturnType<typeof setTasksAC>
+    | ReturnType<typeof changeTaskStatusAC>
 
 
 const InitialState: TaskStateType = {}
@@ -33,6 +34,13 @@ export const tasksReducer = (state = InitialState, action: ActionType): TaskStat
                 ...state,
                 [action.todolistId]:
                     state[action.todolistId].map(t => t.id ===action.taskId ? {...t, ...action.taskProperties} : t)
+            }
+        }
+        case "CHANGE-TASK-STATUS": {
+            return {
+                ...state,
+                [action.todolistId]:
+                    state[action.todolistId].map(t => t.id === action.taskId ? {...t, status: action.status} : t)
             }
         }
         case 'ADD-TODOLIST': {
@@ -73,7 +81,9 @@ export const updateTaskAC = (taskId: string, taskProperties: UpdateTaskDomainPro
 export const setTasksAC = (tasks: TaskType[], todolistId: string) => {
     return { type: "SET-TASKS", tasks, todolistId } as const
 }
-
+export const changeTaskStatusAC = (status: TaskStatuses, taskId: string, todolistId: string) => {
+    return { type: "CHANGE-TASK-STATUS", status, taskId, todolistId } as const
+}
 
 
 //thunks
@@ -90,6 +100,7 @@ export let fetchTasksTC = (todolistId: string) => {
 
 export let removeTasksTC = (todolistId: string, taskId: string) => {
     return (dispatch: Dispatch) => {
+        dispatch(changeTaskStatusAC(TaskStatuses.InProgress, taskId, todolistId))
         dispatch(setAppStatusAC('loading'))
         todolistsApi.deleteTask(todolistId, taskId)
             .then(res => {

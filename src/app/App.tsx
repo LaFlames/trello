@@ -7,7 +7,9 @@ import {TodolistsList} from "../features/TodolistsList/TodolistsList";
 import {ErrorSnackbar} from "../сomponents/ErrorSnackbar/ErrorSnackbar";
 import {useSelector} from "react-redux";
 import {AppRootStateType} from "./store";
-import {appReducer} from "./app-reducer";
+import {RequestStatusType} from "./app-reducer";
+import {Route, Routes, useNavigate} from "react-router-dom";
+import {Login} from "../features/Login/Login";
 
 
 export type FilterType = "all" | "active" | "completed"
@@ -17,8 +19,8 @@ export type TaskStateType = {
 
 function App() {
 
-    let appState = useSelector<AppRootStateType, ReturnType<typeof appReducer>>(state => state.app)
-    let status = appState.status
+    let status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status)
+    const navigate = useNavigate()
 
     return (
         <div className="App">
@@ -31,13 +33,22 @@ function App() {
                     <Typography variant="h6">
                         Todolist
                     </Typography>
-                    <Button color="inherit" variant={"outlined"}>Login</Button>
+                    <Button
+                        color="inherit"
+                        variant={"outlined"}
+                        onClick={() => {navigate('/login')}}>Login</Button>
                 </Toolbar>
                 {status === 'loading' && <LinearProgress />}
             </AppBar>
 
             <Container fixed style={{paddingTop: "20px"}}>
-                <TodolistsList />
+                <Routes>
+                    <Route path={'/'} element={<TodolistsList />}/>
+                    <Route path={'/login'} element={<Login/>}/>
+
+                    <Route path="/*" element={<h1>404: PAGE NOT FOUND</h1>}/>
+                </Routes>
+
             </Container>
         </div>
     );
