@@ -11,13 +11,16 @@ import {
     TextField
 } from "@material-ui/core";
 import {useFormik} from "formik";
-import {useDispatch} from "react-redux";
-import {loginUserTC} from "./login-reducer";
+import {useDispatch, useSelector} from "react-redux";
+import {loginUserTC} from "./auth-reducer";
+import {AppRootStateType} from "../../app/store";
+import {Navigate, Route, Routes} from "react-router-dom";
 
 
 export const Login = () => {
 
     let dispatch = useDispatch()
+    let isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
 
     const formik = useFormik({
         validate: (values) => {
@@ -40,10 +43,14 @@ export const Login = () => {
         },
         onSubmit: values => {
             dispatch(loginUserTC(values))
-            //alert(JSON.stringify(values));
         },
     })
 
+    if (isLoggedIn) {
+        return <Routes>
+            <Route path="/" element={<Navigate to="/" />} />
+        </Routes>
+    }
 
     return <Grid container justifyContent={'center'}>
         <Grid item justifyContent={'center'}>

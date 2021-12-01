@@ -1,7 +1,13 @@
 import {todolistsApi, TodolistType} from "../../../api/todolists-api";
 import {FilterType} from "../../../app/App";
 import {Dispatch} from "redux";
-import {RequestStatusType, setAppStatusAC} from "../../../app/app-reducer";
+import {
+    RequestStatusType,
+    setAppErrorActionType,
+    setAppStatusAC,
+    setAppStatusActionType
+} from "../../../app/app-reducer";
+import {handleServerNetworkAppError} from "../../../utilites/error-utils";
 
 export type AddTodolistACType = ReturnType<typeof addTodolistAC>
 export type RemoveTodolistACType = ReturnType<typeof removeTodolistAC>
@@ -74,12 +80,15 @@ export const setTodolistsAC = (todolists: TodolistType[]) => {
 
 //thunks
 export let fetchTodolistsTC = () => {
-    return (dispatch: Dispatch<ActionsType>) => {
+    return (dispatch: Dispatch<ActionsType | setAppStatusActionType | setAppErrorActionType>) => {
         dispatch(setAppStatusAC('loading'))
         todolistsApi.getTodolists()
             .then(res => {
                 dispatch(setTodolistsAC(res.data))
                 dispatch(setAppStatusAC('succeeded'))
+            })
+            .catch((error) => {
+                handleServerNetworkAppError(error, dispatch)
             })
     }
 }

@@ -1,15 +1,18 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import {AppBar, Button, Container, IconButton, LinearProgress, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
 import {TaskType} from "../api/todolists-api";
 import {TodolistsList} from "../features/TodolistsList/TodolistsList";
 import {ErrorSnackbar} from "../сomponents/ErrorSnackbar/ErrorSnackbar";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./store";
 import {RequestStatusType} from "./app-reducer";
 import {Route, Routes, useNavigate} from "react-router-dom";
 import {Login} from "../features/Login/Login";
+import {Preloader} from "../сomponents/Loader/Preloader";
+import {initializeAppTC, logOutUserTC} from "../features/Login/auth-reducer";
+import {log} from "util";
 
 
 export type FilterType = "all" | "active" | "completed"
@@ -19,8 +22,23 @@ export type TaskStateType = {
 
 function App() {
 
-    let status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status)
-    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status)
+    const isInitialized = useSelector<AppRootStateType, boolean>(state => state.app.isInitialized)
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+
+    const logOutHandler = useCallback(() => {
+        dispatch(logOutUserTC())
+    }, [dispatch])
+
+
+    useEffect(() => {
+        dispatch(initializeAppTC())
+    }, [])
+
+    if (!isInitialized) {
+        return <Preloader/>
+    }
 
     return (
         <div className="App">
@@ -31,12 +49,12 @@ function App() {
                         <Menu />
                     </IconButton>
                     <Typography variant="h6">
-                        Todolist
+                        My trello
                     </Typography>
-                    <Button
-                        color="inherit"
-                        variant={"outlined"}
-                        onClick={() => {navigate('/login')}}>Login</Button>
+                    {isLoggedIn
+                        ? <Button color="inherit" variant={"outlined"} onClick={logOutHandler}>Log out</Button>
+                        : <div></div>
+                    }
                 </Toolbar>
                 {status === 'loading' && <LinearProgress />}
             </AppBar>
@@ -45,10 +63,8 @@ function App() {
                 <Routes>
                     <Route path={'/'} element={<TodolistsList />}/>
                     <Route path={'/login'} element={<Login/>}/>
-
                     <Route path="/*" element={<h1>404: PAGE NOT FOUND</h1>}/>
                 </Routes>
-
             </Container>
         </div>
     );
