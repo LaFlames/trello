@@ -18,8 +18,8 @@ const slice = createSlice({
             const index = tasks.findIndex(t => t.id === action.payload.taskId)
             if (index !== -1) tasks.splice(index, 1)
         },
-        addTaskAC(state, action: PayloadAction<{task: TaskType}>) {
-            state[action.payload.task.todoListId].unshift(action.payload.task)
+        addTaskAC(state, action: PayloadAction<TaskType>) {
+            state[action.payload.todoListId].unshift(action.payload)
         },
         updateTaskAC(state, action: PayloadAction<{taskId: string, properties: UpdateTaskDomainPropertiesType, todolistId: string}>) {
             const tasks = state[action.payload.todolistId]
@@ -32,13 +32,13 @@ const slice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(addTodolistAC, (state, action) => {
-            state[action.payload.todolist.id] = []
+            state[action.payload.id] = []
         });
         builder.addCase(removeTodolistAC, (state, action) => {
-            delete state[action.payload.todolistId]
+            delete state[action.payload]
         });
         builder.addCase(setTodolistsAC, (state, action) => {
-            action.payload.todolists.forEach(tl => {
+            action.payload.forEach(tl => {
                 state[tl.id] = []
             })
         });
@@ -80,7 +80,7 @@ export let addTaskTC = (todolistId: string, taskTitle: string) => {
         todolistsApi.createTask(todolistId, taskTitle)
             .then(res => {
                 if (res.data.resultCode === 0) {
-                    dispatch(addTaskAC({task: res.data.data.item}))
+                    dispatch(addTaskAC(res.data.data.item))
                     dispatch(setAppStatusAC({status: 'succeeded'}))
                 } else {
                     handleServerAppError(res.data, dispatch)
