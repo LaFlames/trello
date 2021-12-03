@@ -5,15 +5,14 @@ import {
     addTodolistTC,
     changeTodolistFilterAC,
     changeTodolistTitleTC, deleteTodolistTC,
-    fetchTodolistsTC,
+    fetchTodolistsTC, FilterType,
     TodolistEntityType
 } from "./Todolist/todolist-reducer";
-import {addTaskTC, removeTasksTC, updateTaskTC} from "./Todolist/Task/tasks-reducer";
+import {addTaskTC, removeTasksTC, TaskStateType, updateTaskTC} from "./Todolist/Task/tasks-reducer";
 import {TaskStatuses} from "../../api/todolists-api";
 import {Grid, Paper} from "@material-ui/core";
 import Todolist from "./Todolist/Todolist";
 import {AddItemForm} from "../../сomponents/AddItemForm/AddItemForm";
-import {FilterType, TaskStateType} from "../../app/App";
 import {Navigate, Route, Routes} from "react-router-dom";
 
 
@@ -32,7 +31,7 @@ export const TodolistsList: React.FC<any> = (props) => {
     }, [])
 
     let removeTask = useCallback((taskId: string, todolistId: string) => {
-        let thunk = removeTasksTC(todolistId, taskId)
+        let thunk = removeTasksTC(todolistId, taskId, {status: TaskStatuses.InProgress})
         dispatch(thunk)
     } , [dispatch])
     let addTask = useCallback((taskTitle: string, todolistId: string) => {
@@ -51,7 +50,7 @@ export const TodolistsList: React.FC<any> = (props) => {
 
 
     let changeTodolistFilter = useCallback((newFilterValue: FilterType, todolistId: string) => {
-        dispatch(changeTodolistFilterAC(newFilterValue, todolistId))
+        dispatch(changeTodolistFilterAC({newFilterValue, todolistId}))
     } , [dispatch])
     let changeTodolistTitle = useCallback((todolistId: string ,newTitle: string) => {
         let thunk = changeTodolistTitleTC(todolistId, newTitle)

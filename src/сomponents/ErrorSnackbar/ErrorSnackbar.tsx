@@ -21,8 +21,8 @@ export function ErrorSnackbar() {
         if (reason === 'clickaway') {
             return;
         }
-        dispatch(setAppErrorAC(null))
-        dispatch(setAppStatusAC('succeeded'))
+        dispatch(setAppErrorAC({error: null}))
+        dispatch(setAppStatusAC({status: 'succeeded'}))
     };
 
     return (

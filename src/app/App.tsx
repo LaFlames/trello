@@ -7,18 +7,12 @@ import {TodolistsList} from "../features/TodolistsList/TodolistsList";
 import {ErrorSnackbar} from "../сomponents/ErrorSnackbar/ErrorSnackbar";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./store";
-import {RequestStatusType} from "./app-reducer";
-import {Route, Routes, useNavigate} from "react-router-dom";
+import {initializeAppTC, RequestStatusType} from "./app-reducer";
+import {Route, Routes} from "react-router-dom";
 import {Login} from "../features/Login/Login";
 import {Preloader} from "../сomponents/Loader/Preloader";
-import {initializeAppTC, logOutUserTC} from "../features/Login/auth-reducer";
-import {log} from "util";
+import {logOutUserTC} from "../features/Login/auth-reducer";
 
-
-export type FilterType = "all" | "active" | "completed"
-export type TaskStateType = {
-    [key: string]: TaskType[]
-}
 
 function App() {
 

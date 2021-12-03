@@ -4,14 +4,14 @@ import {Dispatch} from "react";
 
 export const handleServerAppError = <D>(data: ResponseType<D>, dispatch: Dispatch<any>) => {
     if (data.messages.length) {
-        dispatch(setAppErrorAC(data.messages[0]))
+        dispatch(setAppErrorAC({error: data.messages[0]}))
     } else {
-        dispatch(setAppErrorAC('Some error occuired!'))
+        dispatch(setAppErrorAC({error: 'Some error occurred!'}))
     }
-    setAppStatusAC('failed')
+    setAppStatusAC({status: 'failed'})
 }
 
 export const handleServerNetworkAppError = <D>(error: {message: string}, dispatch: Dispatch<any>) => {
-    dispatch(setAppErrorAC(error.message))
-    dispatch(setAppStatusAC('failed'))
+    dispatch(setAppErrorAC({error: error.message? error.message : 'Some error occurred!'}))
+    dispatch(setAppStatusAC({status: 'failed'}))
 }
